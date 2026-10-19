@@ -2,17 +2,19 @@
 
 Juego animado para practicar qué hacer durante un sismo en un edificio alto.
 
-El jugador escribe su nombre y toma 7 decisiones, con 20 segundos para cada una:
+El jugador escribe su nombre y toma 9 decisiones, con 20 segundos para cada una:
 
 1. Qué hacer mientras tiembla
-2. Qué hacer cuando el temblor para
-3. Bajar por escaleras o por ascensor
-4. Cómo bajar por una escalera con mucha gente
-5. Qué hacer si hay una réplica en la escalera
-6. Qué hacer al salir del edificio
-7. Qué hacer en el punto de encuentro
+2. Cómo ayudar a una compañera herida
+3. Qué hacer cuando ya hay que salir
+4. Bajar por escaleras o por ascensor
+5. Cómo bajar por una escalera con mucha gente
+6. Qué hacer si hay una réplica en la escalera
+7. Cómo ayudar a una compañera en crisis de nervios
+8. Qué hacer al salir del edificio
+9. Qué hacer en el punto de encuentro
 
-Los compañeros del juego (Ana, Leo, Sofía, Camila, Pedro, Andrés y Luisa) cometen errores a la vista del jugador y terminan en el piso, para mostrar lo que **no** se debe hacer.
+Los compañeros del juego (Ana, Leo, Jorge, Sofía, Camila, Pedro, Mario, Andrés y Luisa) cometen errores a la vista del jugador (la mayoría termina en el piso), para mostrar lo que **no** se debe hacer.
 
 ## Cómo jugarlo
 
@@ -29,10 +31,12 @@ Los compañeros del juego (Ana, Leo, Sofía, Camila, Pedro, Andrés y Luisa) com
 ## Lo que enseña el juego
 
 - Durante el temblor: agáchate, cúbrete bajo una mesa firme y sujétate. Aléjate de las ventanas.
-- Cuando pare: deja tus cosas y sal caminando, sin correr.
+- Si hay heridos: no los muevas ni les des medicamentos. Avisa a la brigada de primeros auxilios o llama a la línea 123.
+- Cuando pare y ya hayas avisado: deja tus cosas y sal caminando, sin correr.
 - Evacúa por las escaleras, nunca por el ascensor.
 - En la escalera: baja por la derecha, sin empujar, sujeto del pasamanos y sin usar el celular.
 - Si hay réplica: detente, agáchate contra la pared y cúbrete la cabeza.
+- Si alguien está en crisis de nervios: acompáñalo, háblale con calma y ayúdalo a respirar despacio.
 - Afuera: aléjate de la fachada, ve al punto de encuentro y no regreses.
 - Repórtate con el brigadista y espera instrucciones.
 

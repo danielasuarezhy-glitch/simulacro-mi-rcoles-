@@ -98,6 +98,7 @@ h1{display:flex;align-items:center;gap:12px}
 #char,#rock{will-change:transform}
 .npcIn{transition:transform .7s cubic-bezier(.5,0,.8,1)}
 .npcIn.down{transform:rotate(-90deg)}
+.npcIn.downR{transform:rotate(90deg)}
 .brand{height:72px;width:auto;background:#f7f7f7;border-radius:10px;padding:4px 8px;order:-1}
 header{align-items:center}
 header > div:not(.tools){flex:1 1 320px;min-width:0}
@@ -119,6 +120,28 @@ header > div:not(.tools){flex:1 1 320px;min-width:0}
   .panel p{font-size:.95rem}
   .choice{padding:10px 12px;font-size:.95rem}
 }
+@media (min-width:900px){
+  .wrap{max-width:1440px;display:grid;grid-template-columns:minmax(0,1fr) clamp(320px,28vw,400px);gap:16px 20px;align-items:start}
+  header{grid-column:1/-1}
+  .stage{grid-column:1;max-width:calc((100vh - 150px)*800/450 + 20px);width:100%;justify-self:center}
+  .panel{grid-column:2;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+  .panel p{font-size:.95rem}
+  .choices{grid-template-columns:1fr}
+  .stats{gap:8px}
+}
+.legL,.legR,.armL,.armR{transform-box:fill-box;transform-origin:50% 0}
+#stand.walking .legL,.npcIn.walk .legL{animation:swingL .44s ease-in-out infinite alternate}
+#stand.walking .legR,.npcIn.walk .legR{animation:swingL .44s ease-in-out infinite alternate-reverse}
+#stand.walking .armL,.npcIn.walk .armL{animation:swingA .44s ease-in-out infinite alternate-reverse}
+#stand.walking .armR,.npcIn.walk .armR{animation:swingA .44s ease-in-out infinite alternate}
+@keyframes swingL{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+@keyframes swingA{from{transform:rotate(-16deg)}to{transform:rotate(16deg)}}
+@keyframes squash{0%{transform:scale(1.08,.86)}60%{transform:scale(.97,1.04)}100%{transform:scale(1,1)}}
+.squash{animation:squash .35s ease-out}
+#stand,#crouch,.pst{transform-box:fill-box;transform-origin:50% 100%}
+#books{transform-box:fill-box;transform-origin:50% 50%}
+.npcIn.busy .armL{animation:swingA .3s ease-in-out infinite alternate}
+.npcIn.busy .armR{animation:swingA .3s ease-in-out infinite alternate-reverse}
 /* animaciones del escenario */
 #world.shake{animation:shake .18s linear infinite}
 @keyframes shake{
@@ -135,7 +158,7 @@ header > div:not(.tools){flex:1 1 320px;min-width:0}
 #fader{transition:opacity .7s}
 @media (prefers-reduced-motion:reduce){
   #world.shake{animation-duration:.6s}
-  #lamp,#stand.walking,.npcIn.panic,.npcIn.walk,.cloud,.badge,.panel > *{animation:none}
+  #lamp,#stand.walking,.npcIn.panic,.npcIn.walk,.cloud,.badge,.panel > *,.legL,.legR,.armL,.armR,.squash{animation:none!important}
   .alert{animation:none}
 }
 </style>
@@ -281,6 +304,10 @@ header > div:not(.tools){flex:1 1 320px;min-width:0}
           <circle id="elevBtn" cx="773" cy="300" r="5" fill="#ffc93c"/>
           <!-- extintor -->
           <rect x="784" y="352" width="12" height="40" rx="5" fill="#e23d3d"/><rect x="786" y="346" width="8" height="8" rx="2" fill="#15203a"/>
+          <g id="stretcher" display="none">
+            <rect x="-142" y="2" width="14" height="5" rx="2.5" fill="#3d4555"/><rect x="8" y="2" width="14" height="5" rx="2.5" fill="#3d4555"/>
+            <rect x="-130" y="0" width="140" height="9" rx="3" fill="#2a9d8f"/><rect x="-126" y="-3" width="30" height="5" rx="2.5" fill="#fff"/>
+          </g>
           <g id="npcOffice"></g>
           <g id="glassLayer"></g>
           <rect id="dim" width="800" height="450" fill="#0b1120" opacity="0" pointer-events="none"/>
@@ -355,15 +382,13 @@ header > div:not(.tools){flex:1 1 320px;min-width:0}
           <ellipse cx="0" cy="0" rx="22" ry="5" fill="#000" opacity=".18"/>
           <g id="charBody">
             <g id="stand">
-              <rect x="-14" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/><rect x="1" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/>
-              <rect x="-12" y="-40" width="10" height="35" rx="3" fill="#2b3548"/>
-              <rect x="2" y="-40" width="10" height="35" rx="3" fill="#2b3548"/>
+              <g class="legL"><rect x="-12" y="-40" width="10" height="35" rx="3" fill="#2b3548"/><rect x="-14" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/></g>
+              <g class="legR"><rect x="2" y="-40" width="10" height="35" rx="3" fill="#2b3548"/><rect x="1" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/></g>
               <rect x="-17" y="-84" width="34" height="48" rx="11" fill="#ff7a1a"/>
               <rect x="-17" y="-66" width="34" height="5" fill="#fff3b0"/>
               <rect x="-17" y="-54" width="34" height="5" fill="#fff3b0"/>
-              <rect x="-26" y="-80" width="9" height="34" rx="4.5" fill="#ff7a1a"/>
-              <rect x="17" y="-80" width="9" height="34" rx="4.5" fill="#ff7a1a"/>
-              <circle cx="-21.5" cy="-45" r="5" fill="#c88b5e"/><circle cx="21.5" cy="-45" r="5" fill="#c88b5e"/>
+              <g class="armL"><rect x="-26" y="-80" width="9" height="34" rx="4.5" fill="#ff7a1a"/><circle cx="-21.5" cy="-45" r="5" fill="#c88b5e"/></g>
+              <g class="armR"><rect x="17" y="-80" width="9" height="34" rx="4.5" fill="#ff7a1a"/><circle cx="21.5" cy="-45" r="5" fill="#c88b5e"/></g>
               <circle cx="0" cy="-100" r="16" fill="#c88b5e"/>
               <path d="M-16 -102a16 16 0 0 1 32 0q-9 -5 -16 -2q-8 -3 -16 2z" fill="#15203a"/>
               <circle cx="-5.5" cy="-98" r="2.2" fill="#15203a"/><circle cx="5.5" cy="-98" r="2.2" fill="#15203a"/>
@@ -415,7 +440,7 @@ const SLOW=1.6;
 const wait=ms=>new Promise(r=>setTimeout(r,ms*SLOW));
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
-const TOTAL=7;
+const TOTAL=9;
 let pos={x:520,y:400};
 let soundOn=true, ac=null, rumbleGain=null;
 let player='', score=0, timerInt=null, dustInt=null, best=0;
@@ -463,6 +488,10 @@ $('soundBtn').addEventListener('click',()=>{soundOn=!soundOn;$('soundBtn').textC
 
 /* ---------- personas y globos ---------- */
 const ITEMS={
+  wound:'<ellipse cx="21" cy="-62" rx="5" ry="4" fill="#d62828"/>',
+  bandage:'<rect x="15" y="-70" width="13" height="14" rx="3" fill="#fff" stroke="#cfcfcf"/><path d="M21.5 -66v6M18.5 -63h6" stroke="#e23d3d" stroke-width="2"/>',
+  kit:'<rect x="14" y="-54" width="26" height="18" rx="3" fill="#fff" stroke="#c9c9c9"/><path d="M27 -50v10M22 -45h10" stroke="#e23d3d" stroke-width="3"/>',
+  pill:'<rect x="17" y="-58" width="9" height="13" rx="2" fill="#f4a261"/><rect x="17" y="-60" width="9" height="4" rx="1" fill="#fff"/>',
   laptop:'<rect x="-21" y="-66" width="42" height="26" rx="3" fill="#3d4555"/><rect x="-17" y="-62" width="34" height="18" fill="#8fd3ff"/>',
   phone:'<rect x="17" y="-96" width="12" height="20" rx="2" fill="#15203a"/><rect x="19" y="-93" width="8" height="13" fill="#8fd3ff"/>'
 };
@@ -477,13 +506,13 @@ function person(parent,x,y,o){
   const hair=o.helmet?`<path d="M-18 -102a18 18 0 0 1 36 0z" fill="#fff"/><rect x="-22" y="-105" width="44" height="6" rx="3" fill="#fff"/><rect x="-3" y="-120" width="6" height="16" rx="3" fill="#e6e6e6"/>`
     :`<path d="M-16 -102a16 16 0 0 1 32 0q-9 -5 -16 -2q-8 -3 -16 2z" fill="${o.hair}"/>`;
   const vest=o.vest?`<rect x="-17" y="-84" width="34" height="48" rx="11" fill="#ffd60a"/><rect x="-17" y="-66" width="34" height="5" fill="#fff"/><rect x="-17" y="-54" width="34" height="5" fill="#fff"/>`:'';
-  const st=el('g',{},inn), cr=el('g',{display:'none'},inn); let nst=null;
-  st.innerHTML=`<rect x="-14" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/><rect x="1" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/>
-    <rect x="-12" y="-40" width="10" height="35" rx="3" fill="${o.pants}"/><rect x="2" y="-40" width="10" height="35" rx="3" fill="${o.pants}"/>
+  const st=el('g',{class:'pst'},inn), cr=el('g',{display:'none',class:'pst'},inn); let nst=null;
+  st.innerHTML=`<g class="legL"><rect x="-12" y="-40" width="10" height="35" rx="3" fill="${o.pants}"/><rect x="-14" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/></g>
+    <g class="legR"><rect x="2" y="-40" width="10" height="35" rx="3" fill="${o.pants}"/><rect x="1" y="-7" width="13" height="7" rx="3.5" fill="#1b1f2a"/></g>
     ${o.long?`<rect x="-17" y="-108" width="34" height="40" rx="13" fill="${o.hair}"/>`:''}
-    <rect x="-17" y="-84" width="34" height="48" rx="11" fill="${o.shirt}"/>${vest}
-    <rect x="-26" y="-80" width="9" height="34" rx="4.5" fill="${top}"/><rect x="17" y="-80" width="9" height="34" rx="4.5" fill="${top}"/>
-    <circle cx="-21.5" cy="-45" r="5" fill="${o.skin}"/><circle cx="21.5" cy="-45" r="5" fill="${o.skin}"/>
+    <rect x="-17" y="-84" width="34" height="48" rx="11" fill="${o.shirt}"/>${vest}${o.cross?'<path d="M0 -76v16M-8 -68h16" stroke="#e23d3d" stroke-width="5"/>':''}
+    <g class="armL"><rect x="-26" y="-80" width="9" height="34" rx="4.5" fill="${top}"/><circle cx="-21.5" cy="-45" r="5" fill="${o.skin}"/></g>
+    <g class="armR"><rect x="17" y="-80" width="9" height="34" rx="4.5" fill="${top}"/><circle cx="21.5" cy="-45" r="5" fill="${o.skin}"/></g>
     <circle cx="0" cy="-100" r="16" fill="${o.skin}"/>${hair}
     <circle cx="-5.5" cy="-98" r="2.2" fill="#15203a"/><circle cx="5.5" cy="-98" r="2.2" fill="#15203a"/>
     <circle cx="-9.5" cy="-92" r="3" fill="#f28b82" opacity=".55"/><circle cx="9.5" cy="-92" r="3" fill="#f28b82" opacity=".55"/>
@@ -493,13 +522,18 @@ function person(parent,x,y,o){
     <circle cx="16" cy="-48" r="14" fill="${o.skin}"/><path d="M2 -50a14 14 0 0 1 28 0z" fill="${o.helmet?'#fff':o.hair}"/><circle cx="22" cy="-46" r="2" fill="#15203a"/>
     <path d="M0 -52q14 -18 32 -2" stroke="${top}" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="32" cy="-54" r="5" fill="${o.skin}"/>`;
   const p={g,inn,x,y,down:false,
-    pose(k){st.setAttribute('display',k==='stand'?'inline':'none');cr.setAttribute('display',k==='crouch'?'inline':'none');},
+    pose(k){st.setAttribute('display',k==='stand'?'inline':'none');cr.setAttribute('display',k==='crouch'?'inline':'none');const sq=k==='crouch'?cr:st;sq.classList.remove('squash');requestAnimationFrame(()=>sq.classList.add('squash'));},
     panic(on){inn.classList.toggle('panic',on);},
     say(t,ms){bubble(p.x,p.y-(p.down?60:126),t,ms);},
     async walkTo(nx,ms,ny=p.y,ease='ease-in-out'){inn.classList.add('walk');g.style.transition=`transform ${ms*SLOW}ms ${ease}, opacity .5s`;g.style.transform=`translate(${nx}px,${ny}px)`;p.x=nx;p.y=ny;await wait(ms);inn.classList.remove('walk');},
     hold(item){st.querySelector('.held').innerHTML=item?ITEMS[item]:'';},
-    fall(){thud();p.panic(false);inn.classList.remove('walk');p.pose('stand');p.down=true;inn.classList.add('down');
-      setTimeout(()=>{nst=el('text',{x:-128,y:-22,'font-size':22,fill:'#ffc93c',class:'nstars'},g);nst.textContent='✶ ✶';},450);},
+    fall(dir=-1){thud();p.panic(false);inn.classList.remove('walk');p.pose('stand');p.down=true;inn.classList.add(dir>0?'downR':'down');
+      setTimeout(()=>{nst=el('text',{x:dir>0?92:-128,y:-22,'font-size':22,fill:'#ffc93c',class:'nstars'},g);nst.textContent='✶ ✶';},450);},
+    up(){inn.classList.remove('down','downR');if(nst){nst.remove();nst=null;}p.down=false;p.pose('stand');},
+    clearStars(){if(nst){nst.remove();nst=null;}},
+    busy(on){inn.classList.toggle('busy',on);},
+    sit(){inn.classList.remove('down','downR');if(nst){nst.remove();nst=null;}p.down=false;p.pose('crouch');},
+    lie(){inn.style.transition='none';inn.classList.add('down');p.down=true;setTimeout(()=>{inn.style.transition='';},50);},
     bonk(){p.fall();},
     recover(){},
     hide(){g.style.opacity='0';},
@@ -544,6 +578,10 @@ function buildNpcs(){
   N.ana=person($('npcOffice'),160,400,{shirt:'#3a6ea5',pants:'#2b3548',skin:'#e0ac7e',hair:'#5a3825',long:true});
   N.leo=person($('npcOffice'),462,400,{shirt:'#9b5de5',pants:'#3b2f4a',skin:'#a8714a',hair:'#15203a'});
   N.sofi=person($('npcOffice'),590,400,{shirt:'#e76f51',pants:'#264653',skin:'#f1c27d',hair:'#3b2a20',long:true});
+  N.jorge=person($('npcOffice'),112,400,{shirt:'#6a994e',pants:'#283618',skin:'#e0ac7e',hair:'#6b4226'});
+  N.medic=person($('npcOffice'),94,400,{shirt:'#ffffff',pants:'#2b3548',skin:'#c88b5e',hair:'#2b2118',long:true,cross:true}); N.medic.g.style.opacity='0';
+  N.medic2=person($('npcOffice'),94,400,{shirt:'#ffffff',pants:'#2b3548',skin:'#a8714a',hair:'#15203a',cross:true}); N.medic2.g.style.opacity='0';
+  N.s3=person($('npcStairs'),stepXY(1).x,stepXY(1).y,{shirt:'#457b9d',pants:'#1d3557',skin:'#8d5524',hair:'#15203a'}); N.s3.g.style.opacity='0';
   N.s1=person($('npcStairs'),stepXY(6).x,stepXY(6).y,{shirt:'#2a9d8f',pants:'#2b3548',skin:'#c88b5e',hair:'#2b2118'});
   N.s2=person($('npcStairs'),stepXY(10).x,stepXY(10).y,{shirt:'#e76f51',pants:'#264653',skin:'#f1c27d',hair:'#a0522d',long:true});
   N.brig=person($('npcOut'),550,400,{shirt:'#ff7a1a',pants:'#2b3548',skin:'#c88b5e',hair:'#15203a',helmet:true,vest:true});
@@ -553,6 +591,7 @@ function buildNpcs(){
 }
 
 /* ---------- utilidades de escena ---------- */
+function moveG(e,x,y,ms,ease='ease-in-out'){e.style.transition=`transform ${ms*SLOW}ms ${ease}, opacity .5s`;e.style.transform=`translate(${x}px,${y}px)`;}
 function place(x,y){pos={x,y};ch.style.transition='none';ch.style.transform=`translate(${x}px,${y}px)`;}
 async function walk(x,y=pos.y,speed=0.35){
   const dist=Math.hypot(x-pos.x,y-pos.y), ms=Math.max(250,dist/speed);
@@ -561,7 +600,7 @@ async function walk(x,y=pos.y,speed=0.35){
   ch.style.transform=`translate(${x}px,${y}px)`;
   pos={x,y}; await wait(ms); stand.classList.remove('walking');
 }
-function setPose(p){stand.setAttribute('display',p==='stand'?'inline':'none');crouch.setAttribute('display',p==='crouch'?'inline':'none');$('tag').setAttribute('transform',p==='crouch'?'translate(0,52)':'');}
+function setPose(p){stand.setAttribute('display',p==='stand'?'inline':'none');crouch.setAttribute('display',p==='crouch'?'inline':'none');const sq=p==='crouch'?crouch:stand;sq.classList.remove('squash');void sq.getBBox;requestAnimationFrame(()=>sq.classList.add('squash'));$('tag').setAttribute('transform',p==='crouch'?'translate(0,52)':'');}
 function setTag(){
   $('tagTxt').textContent=player;$('tag').removeAttribute('display');
   try{const w=$('tagTxt').getComputedTextLength()+20;$('tagBg').setAttribute('x',-w/2);$('tagBg').setAttribute('width',w);}catch(e){}
@@ -571,7 +610,7 @@ function dust(on){
   clearInterval(dustInt); $('dim').setAttribute('opacity','0');
   if(!on) return;
   dustInt=setInterval(()=>{
-    const sc=current(); if(sc==='outdoor') return;
+    const sc=current(); if(sc!=='office'&&sc!=='stairs') return;
     if(sc==='office') $('dim').setAttribute('opacity',Math.random()<.25?'.3':'0');
     for(let i=0;i<2;i++){
       const big=Math.random()<.15;
@@ -587,7 +626,7 @@ function shake(on){
   rumble(on);dust(on);
 }
 const CHIP={office:'Piso 12 · Oficina',stairs:'Escalera de emergencia',outdoor:'Afuera · Punto de encuentro'};
-function show(scene){$('chip').textContent=CHIP[scene];['office','stairs','outdoor'].forEach(s=>$(s).setAttribute('display',s===scene?'inline':'none'));}
+function show(scene){$('dust').innerHTML='';$('chip').textContent=CHIP[scene];['office','stairs','outdoor'].forEach(s=>$(s).setAttribute('display',s===scene?'inline':'none'));}
 async function fade(fn){fader.setAttribute('opacity','1');await wait(450);fn();await wait(50);fader.setAttribute('opacity','0');await wait(450);}
 async function dropRock(x){
   rock.style.transition='none';rock.style.transform=`translate(${x}px,-60px)`;
@@ -668,17 +707,19 @@ function lose(step,title,why){
 function win(){
   chime(); confetti();
   if(score>best){best=score;try{localStorage.setItem('sim12-best',best);}catch(e){}}
-  const rank=score>=1250?'Brigadista experto':score>=1000?'Muy preparado':'Sobreviviente';
+  const rank=score>=1600?'Brigadista experto':score>=1300?'Muy preparado':'Sobreviviente';
   render(`<span class="tag">Simulacro superado</span><h2>¡${nm()}, te salvaste!</h2>
   ${stats(`<div class="stat"><span>Rango</span><strong>${rank}</strong></div>`)}
   <ul class="lessons">
     <li><b>1</b><span>Durante el temblor: agáchate, cúbrete bajo una mesa firme y sujétate. Lejos de ventanas.</span></li>
-    <li><b>2</b><span>Cuando pare: deja tus cosas y sal caminando, sin correr.</span></li>
-    <li><b>3</b><span>Evacúa por las escaleras, nunca por el ascensor.</span></li>
-    <li><b>4</b><span>En la escalera: por la derecha, sin empujar, sujeto del pasamanos y sin celular.</span></li>
-    <li><b>5</b><span>Si hay réplica: detente, agáchate contra la pared y cúbrete la cabeza.</span></li>
-    <li><b>6</b><span>Afuera: aléjate de la fachada, ve al punto de encuentro y no regreses.</span></li>
-    <li><b>7</b><span>Repórtate con el brigadista y espera instrucciones.</span></li>
+    <li><b>2</b><span>Si hay heridos: no los muevas ni les des medicamentos. Avisa a la brigada de primeros auxilios o llama a la línea 123.</span></li>
+    <li><b>3</b><span>Cuando pare y ya hayas avisado: deja tus cosas y sal caminando, sin correr.</span></li>
+    <li><b>4</b><span>Evacúa por las escaleras, nunca por el ascensor.</span></li>
+    <li><b>5</b><span>En la escalera: por la derecha, sin empujar, sujeto del pasamanos y sin celular.</span></li>
+    <li><b>6</b><span>Si hay réplica: detente, agáchate contra la pared y cúbrete la cabeza.</span></li>
+    <li><b>7</b><span>Si alguien está en crisis de nervios: acompáñalo, háblale con calma y ayúdalo a respirar despacio.</span></li>
+    <li><b>8</b><span>Afuera: aléjate de la fachada, ve al punto de encuentro y no regreses.</span></li>
+    <li><b>9</b><span>Repórtate con el brigadista y espera instrucciones.</span></li>
   </ul><button class="big" id="retry" type="button">Jugar otra vez</button>`);
   panel.classList.add('result-good');
   $('retry').addEventListener('click',()=>reset(true));$('retry').focus({preventScroll:true});
@@ -696,7 +737,7 @@ function resetScene(){
   $('cracks').setAttribute('opacity','0');
   buildNpcs();
   holdMe(null);$('laptop').setAttribute('display','inline');$('laptop2').setAttribute('display','inline');
-  $('glassLayer').innerHTML='';ch.style.opacity='1';
+  $('glassLayer').innerHTML='';$('stretcher').setAttribute('display','none');ch.style.opacity='1';
   show('office');place(640,400);
 }
 function reset(again){
@@ -713,7 +754,7 @@ function reset(again){
     <p class="err" id="err" hidden>Escribe tu nombre para poder empezar.</p>`);
   $('startForm').addEventListener('submit',e=>{
     e.preventDefault();
-    const v=$('playerName').value.trim();
+    const v=$('playerName').value.trim().replace(/\s+/g,' ').split(' ').map(w=>w.charAt(0).toLocaleUpperCase('es')+w.slice(1)).join(' ');
     if(!v){$('err').hidden=false;$('playerName').focus();return;}
     player=v;try{localStorage.setItem('sim12-name',v);}catch(e){}
     initAudio();if(ac&&ac.state==='suspended')ac.resume();
@@ -722,31 +763,36 @@ function reset(again){
 }
 async function intro(){
   setTag();
-  say('Inicio',`Hola, ${nm()}. Es lunes en la oficina del piso 12.`,'Tus compañeros de Biointegrales, Ana, Leo y Sofía, trabajan tranquilos…');
-  await wait(400); N.ana.say(`¡Buenos días, ${player}!`,1800);
-  await wait(1300); N.leo.say('¿Alguien quiere tinto?',1800);
-  await wait(1300); meSay('¡Yo sí, gracias!',1500);
-  await wait(1300); N.sofi.say('¡Qué lunes tan tranquilo!',1600);
-  await wait(1600); quake();
+  say('Inicio',`Hola, ${nm()}. Es lunes en la oficina del piso 12.`,'Tus compañeros de Biointegrales, Ana, Leo, Sofía y Jorge, trabajan tranquilos…');
+  await wait(1000); N.ana.say(`¡Buenos días, ${player}!`,2600);
+  await wait(2300); N.leo.say('¿Alguien quiere tinto?',2600);
+  await wait(2300); meSay('¡Yo sí, gracias!',2200);
+  await wait(2100); N.sofi.say('¡Qué lunes tan tranquilo!',2400);
+  await wait(2800); quake();
 }
 
 /* 1. durante el temblor */
 async function quake(){
   say(tag(1),'Algo se mueve…','');
   shake(true); N.leo.panic(true); N.sofi.panic(true);
-  N.ana.say('¡Está temblando!',1600);
-  await wait(500);
-  $('books').animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate(30px,250px) rotate(70deg)'}],{duration:900*SLOW,easing:'cubic-bezier(.5,0,1,1)',fill:'forwards'});
-  await wait(600); N.leo.panic(false); N.leo.pose('crouch'); N.leo.say('¡Todos agachados y cubiertos!',2000);
-  await wait(900);
+  await wait(1000);
+  N.ana.say('¡Está temblando!',2400);
+  await wait(1300);
+  $('books').animate([{transform:'translate(0,0) rotate(0)'},{transform:'translate(-38px,252px) rotate(8deg)'}],{duration:900*SLOW,easing:'cubic-bezier(.5,0,1,1)',fill:'forwards'});
+  await wait(1600);
+  N.leo.panic(false); N.leo.say('¡Todos debajo de los escritorios!',2600);
+  await N.leo.walkTo(266,1000); N.leo.pose('crouch'); N.jorge.pose('crouch');
+  await wait(1500);
   // Ana hace algo incorrecto: se acerca a la ventana
-  N.ana.say('¡Voy a ver qué pasa afuera!',1700);
-  await N.ana.walkTo(505,1400);
-  $('cracks').setAttribute('opacity','1'); glass(540); await wait(250);
-  N.ana.fall(); N.ana.say('¡Auch! ¡Los vidrios!',2000);
-  await wait(1200);
-  N.sofi.say('¡Ana se cayó!',1600);
+  N.ana.say('¡Voy a ver qué pasa afuera!',2400);
+  await wait(1000);
+  await N.ana.walkTo(505,2000);
   await wait(500);
+  $('cracks').setAttribute('opacity','1'); glass(540); await wait(450);
+  N.ana.fall(); N.ana.say('¡Auch! ¡Los vidrios!',2600);
+  await wait(2300);
+  N.sofi.say('¡Ana se cayó!',2200);
+  await wait(1500);
   ask(tag(1),`¡Está temblando, ${nm()}! ¿Qué haces?`,'El piso se mueve y los objetos caen. Ana se acercó a la ventana y quedó en el piso.',[
     {label:'Esconderme debajo de la mesa',ok:true,go:async()=>{
       await walk(330,400,0.45); setPose('crouch'); dots(0,'ok');
@@ -754,7 +800,7 @@ async function quake(){
       meSay('¡Me agacho, me cubro y me sujeto!',2200);
       say(tag(1),`¡Bien hecho, ${nm()}!`,'Te agachaste, te cubriste bajo la mesa y te sujetaste de una pata. Espera a que pare…');
       await wait(3200); shake(false); await wait(700);
-      setPose('stand'); N.leo.pose('stand'); N.sofi.pose('stand'); afterQuake();
+      setPose('stand'); N.leo.pose('stand'); N.sofi.pose('stand'); N.jorge.pose('stand'); officeInjury();
     }},
     {label:'Correr al ascensor',go:async()=>{
       meSay('¡Me voy en el ascensor!',1500);
@@ -764,52 +810,115 @@ async function quake(){
     }},
     {label:'Asomarme a la ventana',go:async()=>{
       meSay('¡Yo también quiero ver!',1300);
-      await walk(575,400,0.5); glass(560); await wait(300); await dropRock(575);
+      await walk(575,400,0.5); glass(560); await wait(500); meSay('¡Ay! ¡Los vidrios!',1400); await trip(); await wait(400);
       lose(0,'Te acercaste a la ventana.','Los vidrios se rompen con facilidad en un sismo y es una de las zonas más peligrosas. Aléjate de ventanas y protégete bajo una mesa.');
     }}
   ],0);
 }
 
-/* 2. justo después */
+/* 2. compañera herida: primero la brigada */
+async function officeInjury(){
+  say(tag(2),'El temblor paró. Ana sigue en el piso.','');
+  N.ana.hold('wound');
+  N.ana.say('¡Me corté con los vidrios! ¡Me sale sangre!',2300);
+  await wait(1800);
+  // Jorge hace algo incorrecto: intenta levantarla
+  N.jorge.say('¡Yo la levanto, Ana!',1600);
+  await N.jorge.walkTo(372,1200);
+  N.ana.say('¡Aaay! ¡No me muevas, me duele!',2000);
+  await wait(1000); N.sofi.say('¡Jorge, suéltala! ¡Puedes empeorarla!',2200);
+  await wait(1600); N.jorge.say('Uy… perdón, no sabía',1700);
+  await wait(800); N.jorge.walkTo(94,2200).then(()=>N.jorge.hide());
+  await wait(1200);
+  ask(tag(2),'Ana está herida en el brazo.','Jorge la quiso levantar y le hizo doler más. ¿Qué haces tú?',[
+    {label:'Avisar a la brigada de primeros auxilios y no moverla',ok:true,go:async()=>{
+      dots(1,'ok'); meSay('¡Brigada! ¡Ana está herida!',1800);
+      await wait(900);
+      N.medic.g.style.transition='opacity .5s'; N.medic.g.style.opacity='1';
+      N.medic.hold('kit'); N.medic.say('¡Voy! Soy de la brigada de primeros auxilios',2000);
+      await wait(600);
+      await N.medic.walkTo(475,1500);
+      N.medic.pose('crouch'); await wait(1000);
+      N.ana.hold('bandage'); N.ana.clearStars(); tone(660,.15,'sine',.15);
+      N.medic.say('Listo, ya está vendada. ¡Traigan la camilla!',2300);
+      await wait(1700);
+      // llega el segundo brigadista con la camilla
+      const st=$('stretcher');
+      st.style.transition='none'; st.style.transform='translate(70px,355px)'; st.style.opacity='0'; st.removeAttribute('display');
+      N.medic2.g.style.transition='opacity .5s'; N.medic2.g.style.opacity='1';
+      requestAnimationFrame(()=>{st.style.transition='opacity .5s';st.style.opacity='1';});
+      N.medic2.say('¡Aquí está la camilla!',1700);
+      await wait(300);
+      moveG(st,536,355,2200); await N.medic2.walkTo(560,2200);
+      N.medic.pose('stand'); await N.medic.walkTo(372,700);
+      N.medic.say('A la cuenta de tres: uno, dos… ¡tres!',2000);
+      await wait(1700);
+      moveG(N.ana.g,505,338,700,'ease-out'); tone(520,.12,'sine',.12); await wait(900);
+      N.medic2.say('¡Vamos con cuidado!',1600);
+      await wait(600);
+      moveG(N.ana.g,175,338,3600); moveG(st,206,355,3600); N.medic.walkTo(42,3600);
+      await N.medic2.walkTo(230,3600);
+      [N.medic.g,N.medic2.g,N.ana.g,st].forEach(e=>{e.style.transition='opacity .6s';e.style.opacity='0';});
+      await wait(700); st.setAttribute('display','none');
+      meSay('¡Ana va en buenas manos!',1600);
+      await wait(1400);
+      afterQuake();
+    }},
+    {label:'Levantarla y bajarla cargada por las escaleras',go:async()=>{
+      meSay('¡Yo sí la puedo cargar!',1500);
+      await walk(395,400,0.45);
+      N.ana.say('¡Aaaay! ¡Me duele!',1800);
+      await wait(900); N.sofi.say('¡Suéltala! ¡La estás lastimando!',2000); await wait(1900);
+      lose(1,'Moviste a una herida.','Mover a una persona herida sin saber qué tiene puede empeorar una fractura o una lesión en la columna. Avisa a la brigada de primeros auxilios y no la muevas, salvo que haya un peligro inmediato.');
+    }},
+    {label:'Darle una pastilla para el dolor que tengo en el bolso',go:async()=>{
+      holdMe('pill'); meSay('Toma, Ana, esta pastilla es buenísima',1800);
+      await walk(380,400,0.45);
+      N.sofi.say('¡No le des nada!',1700);
+      await wait(1300); N.ana.say('Me siento mareada…',1800);
+      await wait(1500);
+      lose(1,'Le diste un medicamento.','Nunca le des medicamentos a un herido: puede ser alérgico, tener otra enfermedad o necesitar cirugía. Solo el personal de salud decide qué darle. Tú avisa a la brigada de primeros auxilios.');
+    }}
+  ],1);
+}
+
+/* 3. ahora sí, salir */
 async function afterQuake(){
-  say(tag(2),'El temblor paró.','');
-  N.ana.say('¡Ay! ¡Ayuda, no me puedo parar!',1900);
-  await wait(1500);
-  // Leo hace algo incorrecto: recoge su computador y sale corriendo
+  say(tag(3),'Ahora hay que salir.','');
+  // Leo hace algo incorrecto: se queda guardando sus cosas
   N.leo.say('¡Mi computador! No lo voy a dejar',2000);
   await N.leo.walkTo(262,600);
-  $('laptop2').setAttribute('display','none'); N.leo.hold('laptop');
-  await wait(500); N.sofi.say('¡Leo, deja eso!',1700);
-  await wait(800); N.leo.say('¡Me voy corriendo!',1300);
-  await N.leo.walkTo(200,500,400,'ease-in');
-  N.leo.fall(); N.leo.say('¡Ay! ¡Me tropecé con los libros!',2000);
-  await wait(1400);
-  ask(tag(2),'Leo agarró su computador, salió corriendo y se tropezó.','¿Qué haces tú?',[
+  $('laptop2').setAttribute('display','none'); N.leo.hold('laptop'); N.leo.busy(true);
+  await wait(800); N.leo.say('Y el cargador… y el bolso… y la agenda…',2400);
+  await wait(2000); N.sofi.say('¡Leo, deja eso! ¡Hay que salir ya!',2000);
+  await wait(1700); N.leo.say('¡Ya voy, ya voy! Ya casi…',1800);
+  await wait(1500);
+  ask(tag(3),'Leo se quedó guardando todas sus cosas.','¿Qué haces tú?',[
     {label:'Dejar todo y caminar con calma hacia la salida',ok:true,go:async()=>{
-      dots(1,'ok'); meSay('¡Dejo todo, mi vida primero!',1800);
-      await walk(260,400,0.4); evacuate();
+      dots(2,'ok'); meSay('¡Dejo todo, mi vida primero!',1800);
+      await walk(200,400,0.4); evacuate();
     }},
-    {label:'Recoger mi computador y mis cosas',go:async()=>{
+    {label:'Recoger mi computador y mis cosas, como Leo',go:async()=>{
       meSay('¡Yo también recojo mi computador!',1800);
       await walk(392,400,0.4);
       $('laptop').setAttribute('display','none'); holdMe('laptop');
       await wait(500); meSay('Y el cargador… y mi bolso…',1800);
       await wait(1400); shake(true); N.sofi.say('¡Una réplica!',1500); await wait(500); await dropRock(392);
-      lose(1,'Te quedaste recogiendo tus cosas.','Después de un sismo pueden venir réplicas. Tus cosas no valen más que tu vida: sal de inmediato sin cargar nada.');
+      lose(2,'Te quedaste recogiendo tus cosas.','Después de un sismo pueden venir réplicas. Tus cosas no valen más que tu vida: sal de inmediato sin cargar nada.');
     }},
     {label:'Salir corriendo a toda velocidad',go:async()=>{
       meSay('¡Me voy corriendo!',1200);
-      await walk(240,400,0.9); await trip(); N.sofi.say('¡Lo mismo que Leo!',1800);
-      lose(1,'Te tropezaste con lo que había en el piso.','Correr con objetos y vidrios en el suelo provoca caídas y lesiones. Se evacúa caminando rápido pero sin correr.');
+      await walk(205,400,0.9); await trip(); N.sofi.say('¡Cuidado con los libros!',1800);
+      lose(2,'Te tropezaste con lo que había en el piso.','Correr con objetos y vidrios en el suelo provoca caídas y lesiones. Se evacúa caminando rápido pero sin correr.');
     }}
-  ],1);
+  ],2);
 }
 
-/* 3. escaleras o ascensor */
+/* 4. escaleras o ascensor */
 async function evacuate(){
   alertEl.textContent='¡EVACUACIÓN!';alertEl.classList.add('evac');alertEl.hidden=false;
   siren(3500); setTimeout(()=>{if(!world.classList.contains('shake'))alertEl.hidden=true;},3500);
-  say(tag(3),'Suena la alarma de evacuación.','');
+  say(tag(4),'Suena la alarma de evacuación.','');
   // Sofía usa el ascensor
   N.sofi.say('¡Yo me voy en ascensor, es más rápido!',2100);
   await N.sofi.walkTo(705,700);
@@ -817,22 +926,26 @@ async function evacuate(){
   $('doorL').animate([{transform:'translateX(0)'},{transform:'translateX(-30px)'}],{duration:500,fill:'forwards',easing:'ease-out'});
   $('doorR').animate([{transform:'translateX(0)'},{transform:'translateX(30px)'}],{duration:500,fill:'forwards',easing:'ease-out'});
   await wait(500);
-  $('dim').setAttribute('opacity','.35'); N.sofi.say('¡Se fue la luz!',1300);
-  await wait(500); await rockOn(N.sofi); N.sofi.say('¡Auch!',1400);
-  await wait(500); $('dim').setAttribute('opacity','0');
+  N.sofi.g.style.transition='opacity .5s'; N.sofi.g.style.opacity='0'; await wait(500);
+  $('doorL').animate([{transform:'translateX(-30px)'},{transform:'translateX(0)'}],{duration:600,fill:'forwards',easing:'ease-in'});
+  $('doorR').animate([{transform:'translateX(30px)'},{transform:'translateX(0)'}],{duration:600,fill:'forwards',easing:'ease-in'});
   await wait(700);
-  ask(tag(3),'Hay que bajar 12 pisos.','Sofía quiso usar el ascensor y le cayó un pedazo del techo. ¿Por dónde vas tú?',[
+  $('dim').setAttribute('opacity','.35'); thud(); await wait(400);
+  N.sofi.say('¡Auxilio! ¡Se fue la luz y quedé atrapada!',2600);
+  await wait(900); $('dim').setAttribute('opacity','0');
+  await wait(1400);
+  ask(tag(4),'Hay que bajar 12 pisos.','Sofía se metió al ascensor y quedó atrapada. ¿Por dónde vas tú?',[
     {label:'Por las escaleras',ok:true,go:async()=>{
-      alertEl.hidden=true; dots(2,'ok'); await walk(94,400,0.45); stairsStart();
+      alertEl.hidden=true; dots(3,'ok'); await walk(94,400,0.45); stairsStart();
     }},
     {label:'Por el ascensor',go:async()=>{
       alertEl.hidden=true; meSay('Yo sí lo hago funcionar…',1500);
       await walk(745,400,0.45);
-      flashButton(); await wait(600); meSay('¿Hola? ¿Funciona?',1000);
+      flashButton(); await wait(600); meSay('¿Hola? ¿Funciona?',1000); N.sofi.say('¡No funciona, estoy atrapada!',1800);
       await wait(500); shake(true); await wait(400); await dropRock(745);
-      lose(2,'Tomaste el ascensor.','Después de un sismo el ascensor puede quedarse sin energía o dañado, y una réplica te puede dejar atrapado. Siempre se evacúa por las escaleras.');
+      lose(3,'Tomaste el ascensor.','Después de un sismo el ascensor puede quedarse sin energía o dañado, y una réplica te puede dejar atrapado. Siempre se evacúa por las escaleras.');
     }}
-  ],2);
+  ],3);
 }
 
 /* escaleras */
@@ -848,8 +961,18 @@ function stepXY(i){return {x:S.x0+i*S.dx+20,y:S.y0+i*S.dy};}
 async function descend(from,to,floor,ms=120){
   $('floorTxt').textContent='PISO '+floor; $('floorBig').textContent=floor;
   stand.classList.add('walking');
-  for(let i=from;i<=to;i++){const p=stepXY(i);ch.style.transition=`transform ${ms*SLOW}ms linear`;ch.style.transform=`translate(${p.x}px,${p.y}px)`;pos=p;await wait(ms);}
+  const p=stepXY(to), dur=(to-from+1)*ms;
+  ch.style.transition=`transform ${dur*SLOW}ms linear`;ch.style.transform=`translate(${p.x}px,${p.y}px)`;pos=p;await wait(dur);
   stand.classList.remove('walking');
+}
+async function flightTogether(floor){
+  // los que se quedaron atrás (caídos o que siguieron) ya no se ven en el piso nuevo
+  [N.s1,N.s2,N.s3].forEach(n=>{n.g.style.transition='opacity .18s';n.g.style.opacity='0';});
+  await nextFlight(floor);
+  const p0=stepXY(0); N.s2.g.style.transition='none'; N.s2.g.style.transform=`translate(${p0.x}px,${p0.y}px)`; N.s2.x=p0.x; N.s2.y=p0.y;
+  await wait(30); N.s2.g.style.opacity='1';
+  const q=stepXY(11); N.s2.walkTo(q.x,13*120,q.y,'linear');
+  await descend(1,13,floor);
 }
 async function nextFlight(floor){
   ch.style.transition='opacity .18s';ch.style.opacity='0';await wait(180);
@@ -857,7 +980,7 @@ async function nextFlight(floor){
   ch.style.transition='opacity .18s';ch.style.opacity='1';await wait(180);
 }
 async function stairsStart(){
-  say(tag(4),`¡Bien, ${nm()}! Vas por las escaleras.`,'');
+  say(tag(5),`¡Bien, ${nm()}! Vas por las escaleras.`,'');
   await fade(()=>{show('stairs');const p=stepXY(0);place(p.x,p.y);});
   N.s1.say('¡Por la derecha!',1800);
   await descend(1,13,12); await nextFlight(10);
@@ -867,25 +990,25 @@ async function stairsStart(){
   await wait(500); N.s1.say('¡Camila, guarda ese celular!',1800);
   await wait(1200); N.s2.fall(); N.s2.say('¡Auch, no vi el escalón!',2000);
   await wait(1400);
-  ask(tag(4),'Hay mucha gente bajando por la escalera.','Camila iba grabando con el celular y se cayó. ¿Cómo bajas tú?',[
+  ask(tag(5),'Hay mucha gente bajando por la escalera.','Camila iba grabando con el celular y se cayó. ¿Cómo bajas tú?',[
     {label:'Por la derecha, sin correr y agarrado del pasamanos',ok:true,go:async()=>{
-      dots(3,'ok'); meSay('¡Despacio y por la derecha!',1800);
-      await descend(5,13,10); await nextFlight(7); await descend(1,6,7); aftershock();
+      dots(4,'ok'); meSay('¡Despacio y por la derecha!',1800);
+      await descend(5,7,10); aftershock();
     }},
     {label:'Correr y empujar para pasar a los demás',go:async()=>{
       meSay('¡Permiso, permiso, voy de afán!',1500);
       await descend(5,8,10,60); N.s1.say('¡Oye, no empujes!',1800); await trip();
-      lose(3,'Empujaste y te caíste.','En una evacuación correr y empujar causa caídas y tapona la escalera para todos. Baja en fila, por la derecha y sujeto del pasamanos.');
+      lose(4,'Empujaste y te caíste.','En una evacuación correr y empujar causa caídas y tapona la escalera para todos. Baja en fila, por la derecha y sujeto del pasamanos.');
     }},
     {label:'Sacar el celular y grabar también',go:async()=>{
       holdMe('phone'); meSay('¡Yo también voy a grabar!',1500);
       await descend(5,7,10,170); await trip(); N.s1.say('¡Otro más con el celular!',1800);
-      lose(3,'Ibas mirando el celular.','Distraído no ves los escalones ni lo que pasa a tu alrededor. Guarda el celular y concéntrate en bajar seguro.');
+      lose(4,'Ibas mirando el celular.','Distraído no ves los escalones ni lo que pasa a tu alrededor. Guarda el celular y concéntrate en bajar seguro.');
     }}
-  ],3);
+  ],4);
 }
 
-/* 5. réplica en la escalera */
+/* 6. réplica en la escalera */
 async function aftershock(){
   shake(true);
   N.s2.say('¡Otra vez está temblando!',1800);
@@ -895,30 +1018,74 @@ async function aftershock(){
   await N.s1.walkTo(stepXY(13).x,700,stepXY(13).y,'ease-in');
   N.s1.fall(); N.s1.say('¡Ay! ¡Me caí!',1800);
   await wait(1000);
-  ask(tag(5),'¡Una réplica mientras bajas!','Pedro siguió corriendo y se cayó. ¿Qué haces tú?',[
+  ask(tag(6),'¡Una réplica mientras bajas!','Pedro siguió corriendo y se cayó. ¿Qué haces tú?',[
     {label:'Agacharme contra la pared y cubrirme la cabeza',ok:true,go:async()=>{
-      setPose('crouch'); dots(4,'ok');
+      setPose('crouch'); dots(5,'ok');
       meSay('¡Me cubro la cabeza!',1800);
-      say(tag(5),`¡Muy bien, ${nm()}!`,'Te protegiste junto a la pared, lejos del vacío de la escalera. Espera a que pare…');
+      say(tag(6),`¡Muy bien, ${nm()}!`,'Te protegiste junto a la pared, lejos del vacío de la escalera. Espera a que pare…');
       await wait(2800); shake(false); await wait(600); setPose('stand');
-      N.s1.say('Debí quedarme quieto…',1600);
-      await descend(7,13,7); await nextFlight(4); await descend(1,13,4); await nextFlight(1); await descend(1,13,1);
+      stairsPanic();
+    }},
+    {label:'Seguir bajando lo más rápido posible',go:async()=>{
+      meSay('¡Corro como Pedro!',1200);
+      await descend(7,10,10,60); await dropRock(stepXY(10).x);
+      lose(5,'Seguiste corriendo durante la réplica.','Cuando vuelve a temblar hay que detenerse y protegerse. Moverse mientras tiembla aumenta el riesgo de caerte o de que algo te golpee.');
+    }}
+  ],5);
+}
+
+/* 7. crisis de nervios en la escalera */
+async function stairsPanic(){
+  say(tag(7),'La réplica paró.','');
+  N.s2.sit(); await wait(500); N.s2.panic(true);
+  N.s2.say('¡Tengo mucho miedo! ¡No puedo respirar!',2400);
+  await wait(1900);
+  // Mario hace algo incorrecto: se burla y sigue de largo
+  N.s3.g.style.transition='opacity .4s'; N.s3.g.style.opacity='1';
+  N.s3.say('¡Ay, Camila, no exagere!',1800);
+  await wait(1300);
+  N.s3.say('Yo sigo, no tengo tiempo',1500);
+  await N.s3.walkTo(stepXY(13).x,1900,stepXY(13).y);
+  N.s3.g.style.transition='opacity .5s'; N.s3.g.style.opacity='0';
+  await wait(900);
+  ask(tag(7),'Camila está en crisis de nervios.','Mario se burló de ella y siguió de largo. ¿Qué haces tú?',[
+    {label:'Quedarme con ella, hablarle con calma y ayudarla a respirar despacio',ok:true,go:async()=>{
+      dots(6,'ok'); await descend(7,9,10); setPose('crouch');
+      meSay('Tranquila, aquí estoy. Respira conmigo…',2000);
+      await wait(1800); meSay('Inhala… y exhala despacio',2000);
+      await wait(1800); N.s2.panic(false);
+      await wait(400); N.s2.say('Gracias, ya me siento mejor',2000);
+      await wait(1600); setPose('stand');
+      N.s2.up(); N.s2.hold(null); N.s2.say('Bajemos juntas, despacio',1600);
+      await wait(900);
+      {const q=stepXY(12); N.s2.walkTo(q.x,4*120,q.y,'linear');}
+      await descend(10,13,10);
+      await flightTogether(7); await flightTogether(4); await flightTogether(1);
       meSay('¡Ya veo la salida!',1400);
+      N.s2.walkTo(700,1700);
       await walk(740,pos.y,0.45);
       await fade(()=>{show('outdoor');place(168,400);});
       outside();
     }},
-    {label:'Seguir bajando lo más rápido posible',go:async()=>{
-      meSay('¡Corro como Pedro!',1200);
-      await descend(7,10,7,60); await dropRock(stepXY(10).x);
-      lose(4,'Seguiste corriendo durante la réplica.','Cuando vuelve a temblar hay que detenerse y protegerse. Moverse mientras tiembla aumenta el riesgo de caerte o de que algo te golpee.');
+    {label:'Decirle que no exagere y seguir bajando',go:async()=>{
+      meSay('Ay, no es para tanto…',1500);
+      await descend(7,12,10);
+      N.s2.say('¡Buaaa! ¡Nadie me ayuda!',2000);
+      await wait(1800);
+      lose(6,'Dejaste sola a Camila.','Después de una emergencia es normal sentir miedo o angustia. Una persona en crisis no debe quedarse sola: acompáñala, háblale con calma, ayúdala a respirar despacio y avisa a la brigada.');
+    }},
+    {label:'Gritarle que se calme y sacudirla',go:async()=>{
+      await descend(7,9,10); meSay('¡CÁLMESE YA!',1400);
+      N.s2.say('¡Buaaa! ¡Peor!',1800);
+      await wait(1800);
+      lose(6,'Le gritaste a Camila.','Gritar o sacudir a alguien en crisis aumenta su angustia. Habla con voz calmada, quédate a su lado y ayúdala a respirar despacio.');
     }}
-  ],4);
+  ],6);
 }
 
-/* 6. afuera */
+/* 8. afuera */
 async function outside(){
-  say(tag(6),'Saliste del edificio.','');
+  say(tag(8),'Saliste del edificio.','');
   N.brig.say('¡Por aquí! ¡Al punto de encuentro!',2200);
   await wait(1400);
   // Andrés vuelve al edificio
@@ -933,41 +1100,43 @@ async function outside(){
   await wait(900);
   N.c2.say(`¡${player}, acá estamos!`,1800);
   await wait(600);
-  ask(tag(6),'¿Y ahora qué haces?','Andrés quiso volver al edificio y le cayó un pedazo de la fachada.',[
+  ask(tag(8),'¿Y ahora qué haces?','Andrés quiso volver al edificio y le cayó un pedazo de la fachada.',[
     {label:'Ir al punto de encuentro',ok:true,go:async()=>{
-      dots(5,'ok'); await walk(625,400,0.45); rollCall();
+      dots(7,'ok'); await walk(625,400,0.45); rollCall();
     }},
     {label:'Volver a subir por mi celular',go:async()=>{
       meSay('¡Se me quedó el celular!',1500);
       N.brig.say('¡No, regresa!',1800);
       await walk(168,400,0.45); shake(true); await wait(500); await dropRock(168);
-      lose(5,'Regresaste al edificio.','Después de un sismo vienen réplicas y la estructura puede estar dañada. Nunca regreses hasta que los brigadistas lo autoricen.');
+      lose(7,'Regresaste al edificio.','Después de un sismo vienen réplicas y la estructura puede estar dañada. Nunca regreses hasta que los brigadistas lo autoricen.');
     }},
     {label:'Quedarme pegado al edificio',go:async()=>{
       meSay('Aquí estoy bien…',1300);
       await walk(300,400,0.45); N.brig.say('¡Aléjate de la fachada!',1800); shake(true); await wait(500); await dropRock(300);
-      lose(5,'Te quedaste junto a la fachada.','De la fachada pueden caer vidrios, ladrillos y pedazos de concreto. Hay que alejarse del edificio e ir al punto de encuentro.');
+      lose(7,'Te quedaste junto a la fachada.','De la fachada pueden caer vidrios, ladrillos y pedazos de concreto. Hay que alejarse del edificio e ir al punto de encuentro.');
     }}
-  ],5);
+  ],7);
 }
 
-/* 7. punto de encuentro */
+/* 9. punto de encuentro */
 async function rollCall(){
-  say(tag(7),'Llegaste al punto de encuentro.','');
+  say(tag(9),'Llegaste al punto de encuentro.','');
   // Luisa se va sin reportarse
   N.c1.say('Yo me voy pa’ la casa…',1600);
   N.brig.say('¡Espere! ¡No he pasado lista!',2000);
-  await N.c1.walkTo(785,900,400,'ease-in');
-  N.c1.fall(); N.c1.say('¡Ay! ¡El andén!',1800);
-  await wait(1200); N.brig.say('¡Por irse sin avisar!',1800);
-  await wait(1300);
+  await N.c1.walkTo(785,900);
+  tone(2200,.25,'square',.06); tone(2200,.35,'square',.06,.3);
+  N.brig.say('¡Luisa! ¡Regrese, todavía no he pasado lista!',2400);
+  await wait(1500); N.c1.say('Uy… perdón, no sabía',1800);
+  await N.c1.walkTo(705,1000);
+  await wait(600);
   N.brig.say(`¿Está ${player}?`,2600);
   await wait(500);
-  ask(tag(7),'El brigadista está pasando lista.','Luisa se quiso ir sin avisar y se cayó. ¿Qué haces tú?',[
+  ask(tag(9),'El brigadista está pasando lista.','Luisa se quiso ir sin avisar y el brigadista la tuvo que llamar. ¿Qué haces tú?',[
     {label:'Levantar la mano y reportarme con el brigadista',ok:true,go:async()=>{
-      dots(6,'ok'); meSay('¡Aquí estoy!',1500);
+      dots(8,'ok'); meSay('¡Aquí estoy!',1500);
       await wait(1200); N.brig.say('¡Perfecto! ¡Lo hiciste muy bien!',2600);
-      [N.c2,N.brig].forEach(p=>p.jump());
+      [N.c1,N.c2,N.brig].forEach(p=>p.jump());
       await wait(500); N.c2.say('¡Bravo!',1800);
       win();
     }},
@@ -975,9 +1144,9 @@ async function rollCall(){
       meSay('Yo me voy calladito…',1300);
       await walk(760,400,0.45); N.brig.say(`¿Dónde está ${player}?`,2400);
       await wait(900);
-      lose(6,'Te fuiste sin reportarte.','Si no te reportas, los brigadistas creen que sigues adentro y entran a buscarte, arriesgando su vida. Siempre repórtate y espera instrucciones.');
+      lose(8,'Te fuiste sin reportarte.','Si no te reportas, los brigadistas creen que sigues adentro y entran a buscarte, arriesgando su vida. Siempre repórtate y espera instrucciones.');
     }}
-  ],6);
+  ],8);
 }
 
 reset(false);
